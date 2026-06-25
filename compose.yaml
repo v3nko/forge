@@ -1,0 +1,17 @@
+name: forge
+
+services:
+  ansible:
+    image: forge/ansible:latest
+    ports:
+      - "${FORGE_SSH_BIND:-}:${FORGE_SSH_PORT:-2222}:22"
+    environment:
+      FORGE_AUTHORIZED_KEYS: ${FORGE_AUTHORIZED_KEYS:-}
+    volumes:
+      - forge-ansible-home:/home/dev
+      - ./workspace:/workspace
+    init: true
+    restart: unless-stopped
+
+volumes:
+  forge-ansible-home:

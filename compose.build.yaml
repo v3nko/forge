@@ -1,0 +1,16 @@
+name: forge-build
+
+services:
+  base:
+    image: forge/base:latest
+    build:
+      context: .
+      dockerfile: images/base/Dockerfile
+
+  ansible:
+    image: forge/ansible:latest
+    build:
+      context: .
+      dockerfile: images/ansible/Dockerfile
+      args:
+        BASE_IMAGE: forge/base:latest

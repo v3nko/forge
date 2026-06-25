@@ -1,0 +1,8 @@
+.git
+.agents
+.claude
+.vscode
+workspace
+**/.DS_Store
+**/__pycache__
+**/*.pyc
