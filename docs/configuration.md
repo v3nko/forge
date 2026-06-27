@@ -24,6 +24,7 @@ The base image includes baseline AI coding CLIs used across workstations: Antigr
 | Variable | Description |
 | --- | --- |
 | `FORGE_AUTHORIZED_KEYS` | Public SSH keys written to `/home/dev/.ssh/authorized_keys` on container start. Default value: empty. |
+| `FORGE_AUTHORIZED_KEYS_FILE` | Path to a readable file inside the container whose contents are copied to `/home/dev/.ssh/authorized_keys` when `FORGE_AUTHORIZED_KEYS` is empty. Default value: empty. |
 | `FORGE_SSH_BIND` | Host address used for SSH port binding. Set to `127.0.0.1` for loopback-only access through the host SSH daemon. Default value: empty. |
 | `FORGE_SSH_PORT` | Host SSH port exposed by Compose files. Default value: `2222`. |
 | `FORGE_IMAGE` | Image used by the generic project example. Default value: `forge/ansible:latest`. |

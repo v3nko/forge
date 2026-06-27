@@ -26,6 +26,15 @@ ssh -J user@server-host -p 2222 dev@127.0.0.1
 
 Stack-specific Compose files should expose `FORGE_SSH_BIND` and `FORGE_SSH_PORT` for this pattern.
 
+## Authorized Keys
+
+Forge containers accept SSH authorized keys in two ways:
+
+- `FORGE_AUTHORIZED_KEYS`: inline public keys.
+- `FORGE_AUTHORIZED_KEYS_FILE`: path to a readable file inside the container.
+
+When both are set, `FORGE_AUTHORIZED_KEYS` takes precedence. Use `FORGE_AUTHORIZED_KEYS_FILE` when provisioning containers with a read-only host mount.
+
 ## Persistent State
 
 Persist `/home/dev` with a named volume per project. This keeps SSH configuration, package manager caches, AI CLI tools, shell customization, and other user-installed state across container recreation.
