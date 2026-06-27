@@ -73,6 +73,8 @@ When adding a new image:
 
 Pushes to the `dev` branch publish the `edge` lane.
 
+You can also run the edge workflow manually from GitHub Actions. Use the `images` input to publish `all` or a comma-separated image list such as `base,ansible` or `ansible`.
+
 Published tags:
 
 - `${FORGE_IMAGE_NAMESPACE}/base:edge`

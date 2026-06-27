@@ -6,6 +6,12 @@ on:
       - dev
     paths:
       - images/**
+  workflow_dispatch:
+    inputs:
+      images:
+        description: "Images to publish: all or comma-separated image names"
+        required: true
+        default: all
 
 permissions:
   contents: read
@@ -28,14 +34,18 @@ jobs:
         shell: bash
         run: |
           set -eu
-          compare_ref="${{ github.event.before }}"
-          if [[ -z "${compare_ref}" || "${compare_ref}" =~ ^0+$ ]]; then
-            compare_ref="HEAD^"
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            images="${{ inputs.images }}"
+          else
+            compare_ref="${{ github.event.before }}"
+            if [[ -z "${compare_ref}" || "${compare_ref}" =~ ^0+$ ]]; then
+              compare_ref="HEAD^"
+            fi
+            git diff --name-only "${compare_ref}" HEAD > changed-files.txt
+            images="$(python3 .github/scripts/plan-images.py --lane edge --changed-files changed-files.txt --output images)"
           fi
-          git diff --name-only "${compare_ref}" HEAD > changed-files.txt
-          images="$(python3 .github/scripts/plan-images.py --lane edge --changed-files changed-files.txt --output images)"
           echo "images=${images}" >> "${GITHUB_OUTPUT}"
-          echo "Changed image set: ${images:-none}"
+          echo "Image set: ${images:-none}"
 
   publish:
     needs:
