@@ -1,0 +1,15 @@
+{
+  "images": {
+    "base": {
+      "dockerfile": "images/base/Dockerfile",
+      "dependencies": []
+    },
+    "ansible": {
+      "dockerfile": "images/ansible/Dockerfile",
+      "dependencies": ["base"],
+      "buildArgs": {
+        "BASE_IMAGE": "base"
+      }
+    }
+  }
+}

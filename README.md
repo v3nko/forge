@@ -9,16 +9,95 @@ Image families:
 
 AI CLI tools that define the baseline workstation experience are installed in the image by CI. The user-local tool path, `/home/dev/.local/bin`, comes first on `PATH`, so developers can update or replace these CLIs over SSH in the persistent home volume without rebuilding the image.
 
-Workspace machines are expected to run prebuilt images published by CI. The Dockerfiles stay in this repository as the image source of truth; CI should build them with [compose.build.yaml](compose.build.yaml). See the image-specific README for usage details.
+Workspace machines are expected to run prebuilt images published by CI. The Dockerfiles stay in this repository as the image source of truth, and GitHub Actions publishes them to GHCR. See the image-specific README for usage details.
 
-## CI build
+## Image Publishing
 
-Build images in CI, then publish them to the registry used by workspace machines:
+Forge publishes Docker images to GitHub Container Registry through thin trigger workflows and a reusable publisher workflow:
 
-```sh
-docker compose -f compose.build.yaml build base ansible
-docker compose -f compose.build.yaml push base ansible
+- [`.github/workflows/_images.yaml`](.github/workflows/_images.yaml): reusable build and deploy workflow.
+- `.github/workflows/edge-{image}.yaml`: edge trigger workflows for image-specific changes.
+- [`.github/workflows/edge-base.yaml`](.github/workflows/edge-base.yaml): base edge trigger that publishes `images: all`.
+- [`.github/workflows/stable.yaml`](.github/workflows/stable.yaml): stable release trigger.
+- [`images/manifest.json`](images/manifest.json): central image definition list used by the reusable workflow.
+
+Configure these repository settings before enabling the workflow:
+
+- Create a repository variable named `FORGE_IMAGE_NAMESPACE`. Set it to the lowercase GHCR image prefix, for example `ghcr.io/my-org/forge` or `ghcr.io/my-user/forge`.
+- Allow GitHub Actions to write packages. The workflow uses `GITHUB_TOKEN` with `packages: write` and `contents: read`.
+- Ensure the repository has access to create or update the target GHCR packages under `FORGE_IMAGE_NAMESPACE`.
+
+The workflow has two stages:
+
+- `build`: detects changed image directories and builds only the affected images without publishing them.
+- `deploy`: publishes only the affected images to GHCR after `build` succeeds.
+
+Image selection is change-based:
+
+- Changes under `images/base/` trigger the base edge workflow, which rebuilds and publishes every image that derives from the base image.
+- Changes under `images/{image}/` trigger that image's edge workflow, which rebuilds and publishes only that specific image.
+- Changes outside `images/` do not publish edge images.
+- Stable tags always rebuild and publish every image in the current image family.
+
+### Defining Images
+
+Define every buildable image in [`images/manifest.json`](images/manifest.json). This is the global list used when a workflow passes `images: all`.
+
+Each image entry has:
+
+- `dockerfile`: path to the image Dockerfile.
+- `dependencies`: image names that must exist before this image can build.
+- `buildArgs`: optional mapping from Docker build argument names to dependency image names.
+
+Example:
+
+```json
+{
+  "images": {
+    "android": {
+      "dockerfile": "images/android/Dockerfile",
+      "dependencies": ["base"],
+      "buildArgs": {
+        "BASE_IMAGE": "base"
+      }
+    }
+  }
+}
 ```
+
+When adding a new image:
+
+- Add the image directory under `images/{image}/`.
+- Add the image to `images/manifest.json`.
+- Add an edge trigger workflow for `images/{image}/**` that calls `_images.yaml` with `images: {image}`.
+- If the image derives from `base`, no base trigger change is needed because `edge-base.yaml` uses `images: all`.
+- If the image introduces a new intermediate layer, add a trigger for that layer that passes every image derived from it.
+
+### Edge Lane
+
+Pushes to the `dev` branch publish the `edge` lane.
+
+Published tags:
+
+- `${FORGE_IMAGE_NAMESPACE}/base:edge`
+- `${FORGE_IMAGE_NAMESPACE}/ansible:edge`
+
+Use `edge` for automatic, frequent, latest working-ish images.
+
+### Stable Lane
+
+Pushing a release tag matching `v{semver}` publishes the `stable` lane. Use tags like `v1.2.3`.
+
+Published tags:
+
+- `${FORGE_IMAGE_NAMESPACE}/base:stable`
+- `${FORGE_IMAGE_NAMESPACE}/base:edge`
+- `${FORGE_IMAGE_NAMESPACE}/base:1.2.3`
+- `${FORGE_IMAGE_NAMESPACE}/ansible:stable`
+- `${FORGE_IMAGE_NAMESPACE}/ansible:edge`
+- `${FORGE_IMAGE_NAMESPACE}/ansible:1.2.3`
+
+The stable lane also updates the `edge` tag. This keeps `edge` aligned with the newest deliberate safe default after a stable promotion.
 
 ## Image layout
 
