@@ -26,10 +26,10 @@ Configure these repository settings before enabling the workflow:
 - Allow GitHub Actions to write packages. The workflow uses `GITHUB_TOKEN` with `packages: write` and `contents: read`.
 - Ensure the repository has access to create or update the target GHCR packages under `FORGE_IMAGE_NAMESPACE`.
 
-The workflow has two stages:
+The reusable workflow has two jobs:
 
-- `build`: detects changed image directories and builds only the affected images without publishing them.
-- `deploy`: publishes only the affected images to GHCR after `build` succeeds.
+- `plan`: expands the selected image set into ordered build metadata and tags.
+- `publish`: builds and pushes the selected images once, in dependency order, on the same runner.
 
 Image selection is change-based:
 

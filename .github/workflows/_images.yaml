@@ -54,39 +54,11 @@ jobs:
           matrix="$(python3 .github/scripts/plan-images.py --images '${{ inputs.images }}' --lane '${{ inputs.lane }}' --version '${{ inputs.version }}' --namespace "${IMAGE_NAMESPACE}")"
           echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
 
-  build:
-    name: Build images
+  publish:
+    name: Build and publish images
     runs-on: ubuntu-latest
     needs:
       - plan
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v5
-
-      - name: Build images
-        shell: bash
-        env:
-          IMAGE_MATRIX: ${{ needs.plan.outputs.matrix }}
-        run: |
-          set -eu
-          jq -c '.include[]' <<< "${IMAGE_MATRIX}" | while read -r image; do
-            name="$(jq -r '.name' <<< "${image}")"
-            dockerfile="$(jq -r '.dockerfile' <<< "${image}")"
-            args=()
-            while IFS='=' read -r key value; do
-              if [[ -n "${key}" ]]; then
-                args+=(--build-arg "${key}=${value}")
-              fi
-            done < <(jq -r '.build_args | to_entries[]? | "\(.key)=\(.value)"' <<< "${image}")
-            docker build --file "${dockerfile}" "${args[@]}" --tag "forge/${name}:ci" .
-          done
-
-  deploy:
-    name: Deploy images
-    runs-on: ubuntu-latest
-    needs:
-      - plan
-      - build
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -114,7 +86,7 @@ jobs:
               if [[ -n "${key}" ]]; then
                 args+=(--build-arg "${key}=${value}")
               fi
-            done < <(jq -r '.deploy_build_args | to_entries[]? | "\(.key)=\(.value)"' <<< "${image}")
+            done < <(jq -r '.build_args | to_entries[]? | "\(.key)=\(.value)"' <<< "${image}")
             while read -r tag; do
               args+=(--tag "${tag}")
             done < <(jq -r '.tags[]' <<< "${image}")
