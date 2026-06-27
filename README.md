@@ -4,7 +4,7 @@ Forge is a reusable collection of Docker-based development workstations. It is d
 
 Image families:
 
-- [`forge/base`](images/base/README.md): shared Ubuntu-based SSH workstation with a non-root `dev` user, persistent home behavior, stable shell tooling, Git, SSH, sudo, Node.js/npm, Antigravity CLI (`agy`), OpenCode (`opencode`), and Crush (`crush`).
+- [`forge/base`](images/base/README.md): shared Ubuntu-based SSH workstation with a non-root `dev` user, persistent home behavior, stable shell tooling, Git, SSH, sudo, Node.js/npm, Antigravity CLI (`agy`), OpenCode (`opencode`), Crush (`crush`), and RTK (`rtk`).
 - [`forge/ansible`](images/ansible/README.md): Ansible development workstation layered on top of `forge/base`.
 
 AI CLI tools that define the baseline workstation experience are installed in the image by CI. The user-local tool path, `/home/dev/.local/bin`, comes first on `PATH`, so developers can update or replace these CLIs over SSH in the persistent home volume without rebuilding the image.
