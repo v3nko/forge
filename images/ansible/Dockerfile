@@ -2,9 +2,22 @@ ARG BASE_IMAGE=forge/base:latest
 FROM ${BASE_IMAGE}
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG IMAGE_CREATED=unknown
+ARG IMAGE_REVISION=unknown
+ARG IMAGE_SOURCE=https://github.com/v3nko/forge
+ARG IMAGE_VERSION=edge
 
 LABEL org.opencontainers.image.title="Forge Ansible development image"
 LABEL org.opencontainers.image.description="Ansible development workstation image derived from the Forge base image"
+LABEL org.opencontainers.image.created="${IMAGE_CREATED}"
+LABEL org.opencontainers.image.authors="venko"
+LABEL org.opencontainers.image.url="${IMAGE_SOURCE}"
+LABEL org.opencontainers.image.source="${IMAGE_SOURCE}"
+LABEL org.opencontainers.image.documentation="${IMAGE_SOURCE}"
+LABEL org.opencontainers.image.version="${IMAGE_VERSION}"
+LABEL org.opencontainers.image.revision="${IMAGE_REVISION}"
+LABEL org.opencontainers.image.vendor="venko"
+LABEL org.opencontainers.image.licenses="MPL-2.0"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 

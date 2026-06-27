@@ -79,9 +79,20 @@ jobs:
           IMAGE_MATRIX: ${{ needs.plan.outputs.matrix }}
         run: |
           set -eu
+          image_version="${{ inputs.lane }}"
+          if [[ "${{ inputs.lane }}" == "stable" ]]; then
+            image_version="${{ inputs.version }}"
+            image_version="${image_version#v}"
+          fi
+          image_created="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           jq -c '.include[]' <<< "${IMAGE_MATRIX}" | while read -r image; do
             dockerfile="$(jq -r '.dockerfile' <<< "${image}")"
-            args=()
+            args=(
+              --build-arg "IMAGE_CREATED=${image_created}"
+              --build-arg "IMAGE_REVISION=${GITHUB_SHA}"
+              --build-arg "IMAGE_SOURCE=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
+              --build-arg "IMAGE_VERSION=${image_version}"
+            )
             while IFS='=' read -r key value; do
               if [[ -n "${key}" ]]; then
                 args+=(--build-arg "${key}=${value}")

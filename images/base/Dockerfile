@@ -5,9 +5,22 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG USERNAME=dev
 ARG USER_UID=1000
 ARG USER_GID=${USER_UID}
+ARG IMAGE_CREATED=unknown
+ARG IMAGE_REVISION=unknown
+ARG IMAGE_SOURCE=https://github.com/v3nko/forge
+ARG IMAGE_VERSION=edge
 
 LABEL org.opencontainers.image.title="Forge base development image"
 LABEL org.opencontainers.image.description="Reusable SSH-ready base image for persistent Docker development workstations"
+LABEL org.opencontainers.image.created="${IMAGE_CREATED}"
+LABEL org.opencontainers.image.authors="venko"
+LABEL org.opencontainers.image.url="${IMAGE_SOURCE}"
+LABEL org.opencontainers.image.source="${IMAGE_SOURCE}"
+LABEL org.opencontainers.image.documentation="${IMAGE_SOURCE}"
+LABEL org.opencontainers.image.version="${IMAGE_VERSION}"
+LABEL org.opencontainers.image.revision="${IMAGE_REVISION}"
+LABEL org.opencontainers.image.vendor="venko"
+LABEL org.opencontainers.image.licenses="MPL-2.0"
 LABEL devcontainer.metadata='[{"remoteUser":"dev","containerUser":"dev","init":true}]'
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
