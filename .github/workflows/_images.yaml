@@ -97,7 +97,7 @@ jobs:
               if [[ -n "${key}" ]]; then
                 args+=(--build-arg "${key}=${value}")
               fi
-            done < <(jq -r '.build_args | to_entries[]? | "\(.key)=\(.value)"' <<< "${image}")
+            done < <(jq -r '.deploy_build_args | to_entries[]? | "\(.key)=\(.value)"' <<< "${image}")
             while read -r tag; do
               args+=(--tag "${tag}")
             done < <(jq -r '.tags[]' <<< "${image}")
