@@ -1,0 +1,47 @@
+name: Edge images
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - images/**
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  plan:
+    name: Plan changed images
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.plan.outputs.images }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Plan image set
+        id: plan
+        shell: bash
+        run: |
+          set -eu
+          compare_ref="${{ github.event.before }}"
+          if [[ -z "${compare_ref}" || "${compare_ref}" =~ ^0+$ ]]; then
+            compare_ref="HEAD^"
+          fi
+          git diff --name-only "${compare_ref}" HEAD > changed-files.txt
+          images="$(python3 .github/scripts/plan-images.py --lane edge --changed-files changed-files.txt --output images)"
+          echo "images=${images}" >> "${GITHUB_OUTPUT}"
+          echo "Changed image set: ${images:-none}"
+
+  publish:
+    needs:
+      - plan
+    if: needs.plan.outputs.images != ''
+    uses: ./.github/workflows/_images.yaml
+    with:
+      lane: edge
+      images: ${{ needs.plan.outputs.images }}

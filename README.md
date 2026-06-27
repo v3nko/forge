@@ -16,8 +16,7 @@ Workspace machines are expected to run prebuilt images published by CI. The Dock
 Forge publishes Docker images to GitHub Container Registry through thin trigger workflows and a reusable publisher workflow:
 
 - [`.github/workflows/_images.yaml`](.github/workflows/_images.yaml): reusable build and deploy workflow.
-- `.github/workflows/edge-{image}.yaml`: edge trigger workflows for image-specific changes.
-- [`.github/workflows/edge-base.yaml`](.github/workflows/edge-base.yaml): base edge trigger that publishes `images: all`.
+- [`.github/workflows/edge.yaml`](.github/workflows/edge.yaml): edge trigger that computes impacted images from changed paths.
 - [`.github/workflows/stable.yaml`](.github/workflows/stable.yaml): stable release trigger.
 - [`images/manifest.json`](images/manifest.json): central image definition list used by the reusable workflow.
 
@@ -34,8 +33,8 @@ The workflow has two stages:
 
 Image selection is change-based:
 
-- Changes under `images/base/` trigger the base edge workflow, which rebuilds and publishes every image that derives from the base image.
-- Changes under `images/{image}/` trigger that image's edge workflow, which rebuilds and publishes only that specific image.
+- Changes under `images/base/` publish `base` and every image that depends on it.
+- Changes under `images/{image}/` publish that image and every image that depends on it.
 - Changes outside `images/` do not publish edge images.
 - Stable tags always rebuild and publish every image in the current image family.
 
@@ -69,9 +68,6 @@ When adding a new image:
 
 - Add the image directory under `images/{image}/`.
 - Add the image to `images/manifest.json`.
-- Add an edge trigger workflow for `images/{image}/**` that calls `_images.yaml` with `images: {image}`.
-- If the image derives from `base`, no base trigger change is needed because `edge-base.yaml` uses `images: all`.
-- If the image introduces a new intermediate layer, add a trigger for that layer that passes every image derived from it.
 
 ### Edge Lane
 
