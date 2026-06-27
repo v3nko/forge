@@ -45,3 +45,7 @@ docs/
 - Project source belongs in `/workspace`.
 - SSH bind addresses are configurable, so deployments can choose direct published ports or loopback-only access through the host SSH daemon with `ProxyJump`.
 - New stack images should derive from `forge/base` or another stack-specific layer rather than duplicate base setup.
+
+## License
+
+[Mozilla Public License Version 2.0](/LICENSE)
