@@ -2,7 +2,7 @@
 
 `forge/ansible` is an Ansible development workstation image layered on top of `forge/base`.
 
-It includes the common SSH workstation baseline plus Ansible-focused tooling: Python, Ansible, ansible-core, ansible-lint, Molecule, Molecule Docker plugins, yamllint, netaddr, passlib, pywinrm, and sshpass.
+It includes the common SSH workstation baseline plus Ansible-focused tooling: Ansible, ansible-core, ansible-lint, Molecule, Molecule Docker plugins, yamllint, netaddr, passlib, pywinrm, and sshpass.
 
 ## Image
 

@@ -15,10 +15,12 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     bash-completion \
+    build-essential \
     ca-certificates \
     curl \
     fd-find \
     dumb-init \
+    file \
     git \
     gnupg \
     iproute2 \
@@ -33,6 +35,10 @@ RUN apt-get update \
     openssh-server \
     openssh-client \
     procps \
+    python3 \
+    python3-dev \
+    python3-pip \
+    python3-venv \
     rsync \
     sudo \
     tar \
@@ -67,6 +73,13 @@ RUN npm install -g \
   && curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | RTK_INSTALL_DIR=/usr/local/bin sh \
   && npm cache clean --force
 
+USER dev
+RUN NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+USER root
+RUN printf '%s\n' 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' 'export PATH="$HOME/.local/bin:$PATH"' > /etc/profile.d/homebrew.sh \
+  && chmod 0644 /etc/profile.d/homebrew.sh \
+  && cp -a "/home/dev/." /home-template/
+
 COPY images/base/scripts/entrypoint.sh /usr/local/bin/forge-entrypoint
 RUN chmod +x /usr/local/bin/forge-entrypoint
 
@@ -77,7 +90,7 @@ ENV USER=${USERNAME}
 ENV HOME=/home/${USERNAME}
 ENV FORGE_USER=${USERNAME}
 ENV NPM_CONFIG_PREFIX=/home/${USERNAME}/.local
-ENV PATH=/home/${USERNAME}/.local/bin:${PATH}
+ENV PATH=/home/${USERNAME}/.local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}
 
 WORKDIR /workspace
 

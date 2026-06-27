@@ -2,7 +2,7 @@
 
 `forge/base` is the common SSH workstation image used by stack-specific Forge images.
 
-It provides a non-root `dev` user, SSH server, sudo, common shell utilities, Git, Node.js/npm, and baseline AI coding CLIs: Antigravity CLI (`agy`), OpenCode (`opencode`), Crush (`crush`), and RTK (`rtk`).
+It provides a non-root `dev` user, SSH server, sudo, common shell utilities, Git, Python, Node.js/npm, Homebrew (`brew`), and baseline AI coding CLIs: Antigravity CLI (`agy`), OpenCode (`opencode`), Crush (`crush`), and RTK (`rtk`).
 
 The user-local tool path, `/home/dev/.local/bin`, comes first on `PATH`, so developers can update or replace user-facing CLIs in the persisted home volume without rebuilding the image.
 
