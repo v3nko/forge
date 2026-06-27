@@ -50,9 +50,27 @@ RUN apt-get update -o Acquire::Retries=5 \
     xz-utils \
     zip \
     zsh \
-  && locale-gen en_US.UTF-8 \
-  && groupadd --gid "${USER_GID}" "${USERNAME}" \
-  && useradd --uid "${USER_UID}" --gid "${USER_GID}" -m -s /bin/bash "${USERNAME}" \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN locale-gen en_US.UTF-8 \
+  && if getent group "${USER_GID}" >/dev/null; then \
+    existing_group="$(getent group "${USER_GID}" | cut -d: -f1)"; \
+    if [[ "${existing_group}" != "${USERNAME}" ]]; then \
+      if getent group "${USERNAME}" >/dev/null; then groupdel "${USERNAME}"; fi; \
+      groupmod --new-name "${USERNAME}" "${existing_group}"; \
+    fi; \
+  else \
+    groupadd --gid "${USER_GID}" "${USERNAME}"; \
+  fi \
+  && if id -u "${USERNAME}" >/dev/null 2>&1; then \
+    usermod --uid "${USER_UID}" --gid "${USER_GID}" --home "/home/${USERNAME}" --shell /bin/bash "${USERNAME}"; \
+  elif getent passwd "${USER_UID}" >/dev/null; then \
+    existing_user="$(getent passwd "${USER_UID}" | cut -d: -f1)"; \
+    usermod --login "${USERNAME}" --gid "${USER_GID}" --home "/home/${USERNAME}" --move-home --shell /bin/bash "${existing_user}"; \
+  else \
+    useradd --uid "${USER_UID}" --gid "${USER_GID}" -m -s /bin/bash "${USERNAME}"; \
+  fi \
   && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/${USERNAME}" \
   && chmod 0440 "/etc/sudoers.d/${USERNAME}" \
   && mkdir -p "/home/${USERNAME}/.local/bin" "/home/${USERNAME}/.npm" /var/run/sshd /workspace /home-template \
@@ -62,9 +80,7 @@ RUN apt-get update -o Acquire::Retries=5 \
   && chmod 0644 /etc/profile.d/forge-path.sh \
   && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config \
   && sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config \
-  && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+  && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
 
 RUN npm install -g \
     opencode-ai \
