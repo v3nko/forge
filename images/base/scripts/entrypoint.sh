@@ -33,4 +33,14 @@ if [[ -f "${home_dir}/.ssh/authorized_keys" ]]; then
   chown "${username}:${username}" "${home_dir}/.ssh/authorized_keys"
 fi
 
+# Generate a default user SSH key on first provision. Lives on the persisted
+# home volume, so it is created once and reused on subsequent starts.
+default_key="${home_dir}/.ssh/id_ed25519"
+if [[ ! -f "${default_key}" ]]; then
+  ssh-keygen -t ed25519 -N '' -C "${username}@${HOSTNAME:-forge}" -f "${default_key}"
+  chmod 600 "${default_key}"
+  chmod 644 "${default_key}.pub"
+  chown "${username}:${username}" "${default_key}" "${default_key}.pub"
+fi
+
 exec "$@"
