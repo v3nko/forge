@@ -44,6 +44,9 @@ RUN python3 -m venv /opt/ansible-venv \
 
 ENV PATH=/opt/ansible-venv/bin:${PATH}
 
+RUN printf '%s\n' 'export PATH="/opt/ansible-venv/bin:$PATH"' > /etc/profile.d/forge-ansible.sh \
+  && chmod 0644 /etc/profile.d/forge-ansible.sh
+
 USER dev
 RUN mkdir -p "${HOME}/.ansible" "${HOME}/.cache" "${HOME}/.local/bin"
 USER root
