@@ -91,7 +91,10 @@ RUN locale-gen en_US.UTF-8 \
   && mkdir -p "/home/${USERNAME}/.local/bin" "/home/${USERNAME}/.npm" /var/run/sshd /workspace /home-template \
   && chown -R "${USERNAME}:${USERNAME}" "/home/${USERNAME}" \
   && cp -a "/home/${USERNAME}/." /home-template/ \
-  && printf '%s\n' 'export PATH="$HOME/.local/bin:$PATH"' > /etc/profile.d/forge-path.sh \
+  && printf '%s\n' \
+    'export NPM_CONFIG_PREFIX="$HOME/.local"' \
+    'export PATH="$HOME/.local/bin:$PATH"' \
+    > /etc/profile.d/forge-path.sh \
   && chmod 0644 /etc/profile.d/forge-path.sh \
   && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config \
   && sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config \

@@ -37,6 +37,6 @@ When both are set, `FORGE_AUTHORIZED_KEYS` takes precedence. Use `FORGE_AUTHORIZ
 
 ## Persistent State
 
-Persist `/home/dev` with a named volume per project. This keeps SSH configuration, package manager caches, AI CLI tools, shell customization, and other user-installed state across container recreation.
+Persist `/home` with a named volume per project. This covers the `dev` home directory and Homebrew (`/home/linuxbrew`), so SSH configuration, package manager caches, AI CLI tools, Homebrew packages, shell customization, and other user-installed state survive container recreation.
 
 Bind mount project source into `/workspace`. Keep the workspace separate from the persisted home directory so projects can be recreated or moved without mixing source and user state.

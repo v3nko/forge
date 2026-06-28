@@ -122,7 +122,7 @@ docs/
 
 - Images contain stable tooling: OS packages, runtimes, SDKs, package managers, SSH server, and common shell utilities.
 - Containers behave like persistent workstations, not disposable CI runners.
-- User state belongs in a named `/home/dev` volume.
+- User state belongs in a named `/home` volume (covers the `dev` home and Homebrew at `/home/linuxbrew`).
 - Project source belongs in `/workspace`.
 - SSH bind addresses are configurable, so deployments can choose direct published ports or loopback-only access through the host SSH daemon with `ProxyJump`.
 - New stack images should derive from `forge/base` or another stack-specific layer rather than duplicate base setup.

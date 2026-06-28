@@ -32,7 +32,7 @@ docker compose up -d android
 
 Connect using the shared SSH patterns documented in the [base image README](../base/README.md#ssh-access).
 
-The `forge-android-home` volume persists `/home/dev`. You can recreate the container without losing shell configuration, SSH state, package caches, or user-installed tools. SDK packages added under `/opt/android-sdk` live in the image layer, so re-run `sdkmanager` for them after recreating the container.
+The `forge-android-home` volume persists `/home`. You can recreate the container without losing shell configuration, SSH state, package caches, Homebrew packages, or user-installed tools. SDK packages added under `/opt/android-sdk` live in the image layer, so re-run `sdkmanager` for them after recreating the container.
 
 ## Project Containers
 
@@ -45,4 +45,4 @@ Use a project-specific Compose file for each independent Android workstation. St
 - home volume name
 - workspace bind mount
 
-Each project should get a distinct `/home/dev` named volume. The image can be shared across all projects using the same stack.
+Each project should get a distinct `/home` named volume. The image can be shared across all projects using the same stack.

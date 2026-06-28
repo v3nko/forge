@@ -24,7 +24,7 @@ docker compose up -d ansible
 
 Connect using the shared SSH patterns documented in the [base image README](../base/README.md#ssh-access).
 
-The `forge-ansible-home` volume persists `/home/dev`. You can recreate the container without losing shell configuration, SSH state, package caches, or user-installed tools.
+The `forge-ansible-home` volume persists `/home`. You can recreate the container without losing shell configuration, SSH state, package caches, Homebrew packages, or user-installed tools.
 
 ## Project Containers
 
@@ -37,4 +37,4 @@ Use a project-specific Compose file for each independent Ansible workstation. St
 - home volume name
 - workspace bind mount
 
-Each project should get a distinct `/home/dev` named volume. The image can be shared across all projects using the same stack.
+Each project should get a distinct `/home` named volume. The image can be shared across all projects using the same stack.
