@@ -50,7 +50,7 @@ fi
 host_key_store="${home_dir}/.forge/ssh"
 mkdir -p "${host_key_store}"
 
-if ls "${host_key_store}"/ssh_host_*_key >/dev/null 2>&1; then
+if [[ -f "${host_key_store}/ssh_host_ed25519_key" ]]; then
   cp -af "${host_key_store}"/ssh_host_*_key "${host_key_store}"/ssh_host_*_key.pub /etc/ssh/
 else
   ssh-keygen -A
