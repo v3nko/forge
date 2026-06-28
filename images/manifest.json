@@ -10,6 +10,13 @@
       "buildArgs": {
         "BASE_IMAGE": "base"
       }
+    },
+    "android": {
+      "dockerfile": "images/android/Dockerfile",
+      "dependencies": ["base"],
+      "buildArgs": {
+        "BASE_IMAGE": "base"
+      }
     }
   }
 }

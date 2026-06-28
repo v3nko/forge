@@ -6,6 +6,7 @@ Image families:
 
 - [`forge/base`](images/base/README.md): shared Ubuntu-based SSH workstation with a non-root `dev` user, persistent home behavior, stable shell tooling, Git, SSH, sudo, Python, Node.js/npm, Homebrew (`brew`), OpenCode (`opencode`), Crush (`crush`), and RTK (`rtk`).
 - [`forge/ansible`](images/ansible/README.md): Ansible development workstation layered on top of `forge/base`.
+- [`forge/android`](images/android/README.md): Android development workstation layered on top of `forge/base`, with OpenJDK 17 and the Android SDK (no emulator).
 
 AI CLI tools that define the baseline workstation experience are installed in the image by CI. The user-local tool path, `/home/dev/.local/bin`, comes first on `PATH`, so developers can update or replace these CLIs over SSH in the persistent home volume without rebuilding the image.
 
@@ -106,6 +107,9 @@ images/
     README.md
     scripts/entrypoint.sh
   ansible/
+    Dockerfile
+    README.md
+  android/
     Dockerfile
     README.md
 examples/

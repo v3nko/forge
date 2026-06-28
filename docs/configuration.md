@@ -19,6 +19,18 @@ The base image includes baseline AI coding CLIs used across workstations: OpenCo
 | --- | --- |
 | `BASE_IMAGE` | Base image used to derive the Ansible toolchain image. Default value: `forge/base:latest`. |
 
+## Android image build arguments
+
+| Variable | Description |
+| --- | --- |
+| `BASE_IMAGE` | Base image used to derive the Android development image. Default value: `forge/base:latest`. |
+| `ANDROID_CMDLINE_TOOLS_VERSION` | Build number of the Android command-line tools package downloaded from Google. Default value: `13114758`. |
+| `ANDROID_PLATFORM` | Android platform (SDK API level) pre-installed in the image. Default value: `android-36`. |
+| `ANDROID_BUILD_TOOLS` | Android build-tools version pre-installed in the image. Default value: `36.0.0`. |
+| `GLAB_VERSION` | GitLab CLI (`glab`) release installed in the image. Default value: `1.67.0`. |
+
+The Android SDK is installed at `/opt/android-sdk` (`ANDROID_HOME`/`ANDROID_SDK_ROOT`) and owned by the `dev` user with all licenses accepted, so Gradle/AGP can auto-fetch additional platforms or build-tools on first build. The image ships no emulator, NDK, CMake, or system Gradle; add SDK components on demand with `sdkmanager` and build projects through their Gradle wrapper.
+
 ## Runtime environment variables
 
 | Variable | Description |

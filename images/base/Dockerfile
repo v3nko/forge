@@ -31,12 +31,14 @@ RUN apt-get update -o Acquire::Retries=5 \
     build-essential \
     ca-certificates \
     curl \
+    dnsutils \
     fd-find \
     dumb-init \
     file \
     git \
     gnupg \
     iproute2 \
+    iputils-ping \
     jq \
     less \
     locales \
