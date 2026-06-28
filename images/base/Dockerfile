@@ -98,7 +98,6 @@ RUN locale-gen en_US.UTF-8 \
 RUN npm install -g \
     opencode-ai \
     @charmland/crush \
-  && curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- --dir /usr/local/bin \
   && curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | RTK_INSTALL_DIR=/usr/local/bin sh \
   && npm cache clean --force
 

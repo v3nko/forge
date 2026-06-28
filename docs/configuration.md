@@ -2,7 +2,7 @@
 
 Forge is configured with build arguments, environment variables, and Compose volumes. Project-specific Compose files should override only the project name, image tag, port, workspace mount, and home volume name.
 
-The base image includes baseline AI coding CLIs used across workstations: Antigravity CLI (`agy`), OpenCode (`opencode`), Crush (`crush`), and RTK (`rtk`). The user-local tool path, `/home/dev/.local/bin`, comes first on `PATH`, and npm global installs default to `/home/dev/.local`, so developers can update or replace these tools in the persisted home volume without rebuilding the image.
+The base image includes baseline AI coding CLIs used across workstations: OpenCode (`opencode`), Crush (`crush`), and RTK (`rtk`). The user-local tool path, `/home/dev/.local/bin`, comes first on `PATH`, and npm global installs default to `/home/dev/.local`, so developers can update or replace these tools in the persisted home volume without rebuilding the image.
 
 ## Base image build arguments
 
