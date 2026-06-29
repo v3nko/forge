@@ -97,6 +97,7 @@ def tags_for(image_name, lane, version, namespace):
     plain_version = version[1:]
     return [
         f"{namespace}/{image_name}:stable",
+        f"{namespace}/{image_name}:latest",
         f"{namespace}/{image_name}:edge",
         f"{namespace}/{image_name}:{plain_version}",
     ]

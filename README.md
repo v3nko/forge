@@ -80,6 +80,7 @@ Published tags:
 
 - `${FORGE_IMAGE_NAMESPACE}/base:edge`
 - `${FORGE_IMAGE_NAMESPACE}/ansible:edge`
+- `${FORGE_IMAGE_NAMESPACE}/android:edge`
 
 Use `edge` for automatic, frequent, latest working-ish images.
 
@@ -87,14 +88,16 @@ Use `edge` for automatic, frequent, latest working-ish images.
 
 Pushing a release tag matching `v{semver}` publishes the `stable` lane. Use tags like `v1.2.3`.
 
-Published tags:
+Published tags (per image, shown for `base`):
 
 - `${FORGE_IMAGE_NAMESPACE}/base:stable`
+- `${FORGE_IMAGE_NAMESPACE}/base:latest`
 - `${FORGE_IMAGE_NAMESPACE}/base:edge`
 - `${FORGE_IMAGE_NAMESPACE}/base:1.2.3`
-- `${FORGE_IMAGE_NAMESPACE}/ansible:stable`
-- `${FORGE_IMAGE_NAMESPACE}/ansible:edge`
-- `${FORGE_IMAGE_NAMESPACE}/ansible:1.2.3`
+
+The same tag set is published for every image in the family (`ansible`, `android`, ...).
+
+`latest` is an alias of `stable`: it always points to the newest deliberate release, which is the conventional default pulled when no tag is given. Use `stable`/`latest` for safe-default deployments and `edge` for the newest dev build.
 
 The stable lane also updates the `edge` tag. This keeps `edge` aligned with the newest deliberate safe default after a stable promotion.
 
