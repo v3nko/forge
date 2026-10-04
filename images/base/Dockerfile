@@ -113,8 +113,10 @@ RUN printf '%s\n' 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' 'expo
   && chmod 0644 /etc/profile.d/homebrew.sh \
   && cp -a "/home/dev/." /home-template/
 
+COPY images/base/configs/tmux.conf /etc/tmux.conf
 COPY images/base/scripts/entrypoint.sh /usr/local/bin/forge-entrypoint
-RUN chmod +x /usr/local/bin/forge-entrypoint
+RUN chmod 0644 /etc/tmux.conf \
+  && chmod +x /usr/local/bin/forge-entrypoint
 
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
