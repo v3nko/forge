@@ -31,6 +31,16 @@ The base image includes baseline AI coding CLIs used across workstations: OpenCo
 
 The Android SDK is installed at `/opt/android-sdk` (`ANDROID_HOME`/`ANDROID_SDK_ROOT`) and owned by the `dev` user with all licenses accepted, so Gradle/AGP can auto-fetch additional platforms or build-tools on first build. The image ships no emulator, NDK, CMake, or system Gradle; add SDK components on demand with `sdkmanager` and build projects through their Gradle wrapper.
 
+## Garmin image build arguments
+
+| Variable | Description |
+| --- | --- |
+| `BASE_IMAGE` | Base image used to derive the Garmin development image. Default value: `forge/base:latest`. |
+| `CONNECT_IQ_SDK_VERSION` | Connect IQ SDK version baked into the image. Default value: `9.2.0`. |
+| `CONNECT_IQ_SDK_MANAGER_VERSION` | `connect-iq-sdk-manager` release installed in the image. Default value: `0.8.4`. |
+
+The Garmin image installs Eclipse Temurin 21 from the Adoptium apt repository and bakes the pinned Connect IQ SDK with the SDK agreement accepted at image build. Device binaries are downloaded at first run by `forge-garmin-setup` (a Garmin account login may be required; no credentials are baked into the image or used in CI). The image ships no simulator or X server: compile in the container and run the Connect IQ simulator on your local machine.
+
 ## Runtime environment variables
 
 | Variable | Description |
@@ -40,6 +50,8 @@ The Android SDK is installed at `/opt/android-sdk` (`ANDROID_HOME`/`ANDROID_SDK_
 | `FORGE_SSH_BIND` | Host address used for SSH port binding. Set to `127.0.0.1` for loopback-only access through the host SSH daemon. Default value: empty. |
 | `FORGE_SSH_PORT` | Host SSH port exposed by Compose files. Default value: `2222`. |
 | `FORGE_IMAGE` | Image used by the generic project example. Default value: `forge/ansible:latest`. |
+| `GARMIN_USERNAME` | Garmin account username used by `connect-iq-sdk-manager login` when `forge-garmin-setup` downloads device binaries. Optional. Default value: empty. |
+| `GARMIN_PASSWORD` | Garmin account password used by `connect-iq-sdk-manager login` when `forge-garmin-setup` downloads device binaries. Optional. Default value: empty. |
 
 ## SSH access
 

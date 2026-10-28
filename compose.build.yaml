@@ -14,3 +14,11 @@ services:
       dockerfile: images/ansible/Dockerfile
       args:
         BASE_IMAGE: forge/base:latest
+
+  garmin:
+    image: forge/garmin:latest
+    build:
+      context: .
+      dockerfile: images/garmin/Dockerfile
+      args:
+        BASE_IMAGE: forge/base:latest

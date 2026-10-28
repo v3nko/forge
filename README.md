@@ -7,6 +7,7 @@ Image families:
 - [`forge/base`](images/base/README.md): shared Ubuntu-based SSH workstation with a non-root `dev` user, persistent home behavior, stable shell tooling, Git, SSH, sudo, Python, Node.js/npm, Homebrew (`brew`), OpenCode (`opencode`), Crush (`crush`), and RTK (`rtk`).
 - [`forge/ansible`](images/ansible/README.md): Ansible development workstation layered on top of `forge/base`.
 - [`forge/android`](images/android/README.md): Android development workstation layered on top of `forge/base`, with OpenJDK 17 and the Android SDK (no emulator).
+- [`forge/garmin`](images/garmin/README.md): Garmin Connect IQ app and watchface development workstation layered on top of `forge/base`, with Eclipse Temurin 21, a pinned Connect IQ SDK, and the `connect-iq-sdk-manager` CLI.
 
 AI CLI tools that define the baseline workstation experience are installed in the image by CI. The user-local tool path, `/home/dev/.local/bin`, comes first on `PATH`, so developers can update or replace these CLIs over SSH in the persistent home volume without rebuilding the image.
 
@@ -81,6 +82,7 @@ Published tags:
 - `${FORGE_IMAGE_NAMESPACE}/base:edge`
 - `${FORGE_IMAGE_NAMESPACE}/ansible:edge`
 - `${FORGE_IMAGE_NAMESPACE}/android:edge`
+- `${FORGE_IMAGE_NAMESPACE}/garmin:edge`
 
 Use `edge` for automatic, frequent, latest working-ish images.
 
@@ -95,7 +97,7 @@ Published tags (per image, shown for `base`):
 - `${FORGE_IMAGE_NAMESPACE}/base:edge`
 - `${FORGE_IMAGE_NAMESPACE}/base:1.2.3`
 
-The same tag set is published for every image in the family (`ansible`, `android`, ...).
+The same tag set is published for every image in the family (`ansible`, `android`, `garmin`, ...).
 
 `latest` is an alias of `stable`: it always points to the newest deliberate release, which is the conventional default pulled when no tag is given. Use `stable`/`latest` for safe-default deployments and `edge` for the newest dev build.
 
@@ -115,6 +117,10 @@ images/
   android/
     Dockerfile
     README.md
+  garmin/
+    Dockerfile
+    README.md
+    scripts/forge-garmin-setup.sh
 examples/
   project/compose.yaml
 docs/

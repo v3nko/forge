@@ -17,6 +17,13 @@
       "buildArgs": {
         "BASE_IMAGE": "base"
       }
+    },
+    "garmin": {
+      "dockerfile": "images/garmin/Dockerfile",
+      "dependencies": ["base"],
+      "buildArgs": {
+        "BASE_IMAGE": "base"
+      }
     }
   }
 }

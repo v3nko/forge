@@ -13,5 +13,18 @@ services:
     init: true
     restart: unless-stopped
 
+  garmin:
+    image: forge/garmin:latest
+    ports:
+      - "${FORGE_SSH_BIND:-}:${FORGE_SSH_PORT:-2222}:22"
+    environment:
+      FORGE_AUTHORIZED_KEYS: ${FORGE_AUTHORIZED_KEYS:-}
+    volumes:
+      - forge-garmin-home:/home
+      - ./workspace:/workspace
+    init: true
+    restart: unless-stopped
+
 volumes:
   forge-ansible-home:
+  forge-garmin-home:
