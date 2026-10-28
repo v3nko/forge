@@ -99,10 +99,11 @@ ensure_agreement() {
   fi
 }
 
-# Make sure the pinned SDK is downloaded and active, and that the stable /opt/connect-iq-sdk PATH 
-# shim points at its bin directory.
+# Make sure the pinned SDK is downloaded and active, and that the stable /opt/connect-iq-sdk shim
+# points at the SDK *root* — both PATH entries (Docker ENV and profile.d) use
+# ${GARMIN_CONNECT_IQ_SDK}/bin, so the shim must resolve to the directory that contains bin/monkeyc.
 ensure_sdk() {
-  local bin
+  local bin root
   bin="$(connect-iq-sdk-manager sdk current-path --bin 2>/dev/null || true)"
   if [ -z "${bin}" ] || [ ! -e "${bin}/monkeyc" ]; then
     echo "Downloading Connect IQ SDK ${SDK_VERSION} (first run only)..."
@@ -113,10 +114,15 @@ ensure_sdk() {
     echo "error: Connect IQ SDK ${SDK_VERSION} is not available; monkeyc not found" >&2
     exit 1
   fi
+  root="$(dirname "${bin}")"
   echo "Connect IQ SDK active at ${bin}"
 
-  if [ "$(readlink -f "${SDK_LINK}" 2>/dev/null || true)" != "$(readlink -f "${bin}" 2>/dev/null || true)" ]; then
-    as_root ln -sfn "${bin}" "${SDK_LINK}"
+  if [ "$(readlink -f "${SDK_LINK}" 2>/dev/null || true)" != "$(readlink -f "${root}" 2>/dev/null || true)" ]; then
+    as_root ln -sfn "${root}" "${SDK_LINK}"
+  fi
+  if [ ! -e "${SDK_LINK}/bin/monkeyc" ]; then
+    echo "error: ${SDK_LINK}/bin/monkeyc does not resolve; the SDK PATH shim is broken" >&2
+    exit 1
   fi
 
   mkdir -p "${HOME}/.Garmin/keys"
