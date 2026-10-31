@@ -33,6 +33,48 @@ if [[ -f "${home_dir}/.ssh/authorized_keys" ]]; then
   chown "${username}:${username}" "${home_dir}/.ssh/authorized_keys"
 fi
 
+# Ensure OpenSSH permits user environment variables for the configured user and root
+if ! grep -q "^Match User ${username},root" /etc/ssh/sshd_config 2>/dev/null; then
+  sed -i '/^Match User .*$/,/^[[:space:]]*PermitUserEnvironment/d' /etc/ssh/sshd_config 2>/dev/null || true
+  printf '\nMatch User %s,root\n    PermitUserEnvironment yes\n' "${username}" >> /etc/ssh/sshd_config
+fi
+
+# Generate environment files for SSH sessions preserving exact values
+write_user_environment() {
+  local target_dir="$1"
+  local target_file="${target_dir}/environment"
+  local owner="$2"
+
+  mkdir -p "${target_dir}"
+  chmod 700 "${target_dir}"
+  chown "${owner}" "${target_dir}"
+
+  local tmp_file
+  tmp_file="$(mktemp "${target_dir}/environment.tmp.XXXXXX")"
+  chmod 600 "${tmp_file}"
+  chown "${owner}" "${tmp_file}"
+
+  while IFS= read -r var_name; do
+    case "${var_name}" in
+      HOME|USER|LOGNAME|SHELL|PWD|OLDPWD|SHLVL|_|HOSTNAME|TERM|DEBIAN_FRONTEND|FORGE_AUTHORIZED_KEYS|FORGE_AUTHORIZED_KEYS_FILE)
+        continue
+        ;;
+      *)
+        if [[ "${!var_name}" != *$'\n'* ]]; then
+          printf '%s=%s\n' "${var_name}" "${!var_name}" >> "${tmp_file}"
+        fi
+        ;;
+    esac
+  done < <(compgen -e | sort -u)
+
+  mv -f "${tmp_file}" "${target_file}"
+  chmod 600 "${target_file}"
+  chown "${owner}" "${target_file}"
+}
+
+write_user_environment "${home_dir}/.ssh" "${username}:${username}"
+write_user_environment "/root/.ssh" "root:root"
+
 # Generate a default user SSH key on first provision. Lives on the persisted home volume, so it is
 # created once and reused on subsequent starts.
 default_key="${home_dir}/.ssh/id_ed25519"

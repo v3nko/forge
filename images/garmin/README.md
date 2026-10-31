@@ -17,7 +17,7 @@ The script is idempotent and re-runnable. It:
 3. downloads the default device set,
 4. creates `~/.Garmin/keys`.
 
-Garmin requires a logged-in developer account for device binaries. If the download is rejected, the script runs the interactive `connect-iq-sdk-manager login` for you and resumes. To log in ahead of time (or to log in non-interactively), export `GARMIN_USERNAME` and `GARMIN_PASSWORD` before running the script.
+Garmin requires a logged-in developer account for device binaries. If the download is rejected, the script runs the interactive `connect-iq-sdk-manager login` for you and resumes. To log in ahead of time (or to log in non-interactively), configure `GARMIN_USERNAME` and `GARMIN_PASSWORD` via Docker Compose. The container automatically populates `~/.ssh/environment` on startup so credentials are ready upon SSH login.
 
 Manual equivalents, if you prefer:
 

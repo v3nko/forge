@@ -19,6 +19,8 @@ services:
       - "${FORGE_SSH_BIND:-}:${FORGE_SSH_PORT:-2222}:22"
     environment:
       FORGE_AUTHORIZED_KEYS: ${FORGE_AUTHORIZED_KEYS:-}
+      GARMIN_USERNAME: ${GARMIN_USERNAME:-}
+      GARMIN_PASSWORD: ${GARMIN_PASSWORD:-}
     volumes:
       - forge-garmin-home:/home
       - ./workspace:/workspace
