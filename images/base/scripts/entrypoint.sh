@@ -33,12 +33,6 @@ if [[ -f "${home_dir}/.ssh/authorized_keys" ]]; then
   chown "${username}:${username}" "${home_dir}/.ssh/authorized_keys"
 fi
 
-# Ensure OpenSSH permits user environment variables for the configured user and root
-if ! grep -q "^Match User ${username},root" /etc/ssh/sshd_config 2>/dev/null; then
-  sed -i '/^Match User .*$/,/^[[:space:]]*PermitUserEnvironment/d' /etc/ssh/sshd_config 2>/dev/null || true
-  printf '\nMatch User %s,root\n    PermitUserEnvironment yes\n' "${username}" >> /etc/ssh/sshd_config
-fi
-
 # Generate environment files for SSH sessions preserving exact values
 write_user_environment() {
   local target_dir="$1"
